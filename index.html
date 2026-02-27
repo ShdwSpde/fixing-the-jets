@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIXING THE JETS — Part 1: Free Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #125740;
+  --green-dim: #0d3f2e;
+  --green-bright: #1a9e6a;
+  --black: #060606;
+  --off-black: #0e0e0e;
+  --card: #141414;
+  --border: #2a2a2a;
+  --white: #f0efe9;
+  --gray: #777;
+  --gray-dark: #444;
+  --red: #c44;
+  --red-dim: rgba(204,68,68,0.12);
+  --gold: #c4a945;
+  --blue: #5b8dd9;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+::selection {
+  background: var(--green);
+  color: var(--white);
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--green) var(--black);
+}
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ===== SCROLL PROGRESS ===== */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: var(--green);
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: rgba(6,6,6,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+nav.visible { transform: translateY(0); }
+nav .nav-left { color: var(--gray); }
+nav .nav-left span { color: var(--green-bright); }
+nav .nav-links { display: flex; gap: 28px; }
+nav .nav-links a {
+  color: var(--gray);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+nav .nav-links a:hover { color: var(--white); }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 60px 48px 80px;
+  position: relative;
+  overflow: hidden;
+  background: var(--green);
+  border-bottom: 4px solid var(--white);
+}
+
+.hero::before {
+  content: 'NYJ';
+  position: absolute;
+  top: -8%;
+  right: -4%;
+  font-family: var(--font-display);
+  font-size: clamp(300px, 45vw, 600px);
+  color: rgba(0,0,0,0.12);
+  line-height: 0.85;
+  pointer-events: none;
+}
+
+.hero-part {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(240,239,233,0.5);
+  margin-bottom: 20px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(72px, 13vw, 180px);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.hero-subtitle {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 3vw, 40px);
+  letter-spacing: 0.04em;
+  color: rgba(240,239,233,0.7);
+  margin-bottom: 48px;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(240,239,233,0.45);
+  border-top: 1px solid rgba(240,239,233,0.15);
+  padding-top: 24px;
+}
+
+/* ===== SECTION LAYOUT ===== */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+section {
+  padding: 100px 0;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green-bright);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5.5vw, 72px);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  margin-bottom: 40px;
+}
+
+/* ===== TEARDOWN ===== */
+.teardown {
+  background: var(--off-black);
+  border-bottom: 1px solid var(--border);
+}
+
+.teardown-intro {
+  max-width: 720px;
+  color: var(--gray);
+  font-size: 14px;
+  line-height: 1.85;
+  margin-bottom: 60px;
+}
+
+.teardown-intro em {
+  color: var(--white);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.teardown-intro .big-date {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 48px);
+  color: var(--white);
+  display: block;
+  margin: 24px 0 12px;
+  line-height: 1;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 40px;
+  margin-bottom: 60px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+
+.tl-event {
+  position: relative;
+  margin-bottom: 28px;
+  padding: 20px 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  transition: border-color 0.3s;
+}
+
+.tl-event:hover { border-color: var(--green); }
+
+.tl-event::before {
+  content: '';
+  position: absolute;
+  left: -35px;
+  top: 26px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--green-bright);
+  background: var(--black);
+}
+
+.tl-event.major::before {
+  background: var(--green-bright);
+  width: 12px;
+  height: 12px;
+  left: -36px;
+}
+
+.tl-date {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green-bright);
+  margin-bottom: 6px;
+}
+
+.tl-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+
+.tl-detail {
+  font-size: 12px;
+  color: var(--gray);
+  line-height: 1.7;
+}
+
+.tl-detail strong { color: var(--white); font-weight: 600; }
+
+.tl-haul {
+  margin-top: 10px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tl-chip {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+}
+
+.tl-chip.out { border-color: var(--red); color: var(--red); }
+.tl-chip.in { border-color: var(--green-bright); color: var(--green-bright); }
+
+/* Departed / Acquired split */
+.split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-bottom: 60px;
+}
+
+.split-col h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.split-col.gone h3 { border-bottom: 2px solid var(--red); }
+.split-col.got h3 { border-bottom: 2px solid var(--green-bright); }
+
+.split-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(42,42,42,0.5);
+  font-size: 12px;
+}
+
+.split-row .name { color: var(--white); font-weight: 500; }
+.split-row .pos { color: var(--gray); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+.split-row .dest { color: var(--gray-dark); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* Dead money block */
+.dead-money {
+  border: 3px solid var(--red);
+  background: var(--red-dim);
+  padding: 32px;
+  margin-bottom: 60px;
+}
+
+.dead-money h3 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  margin-bottom: 16px;
+  color: var(--red);
+}
+
+.dead-money-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-bottom: 16px;
+}
+
+.dm-card {
+  background: rgba(0,0,0,0.4);
+  padding: 16px 20px;
+  border: 1px solid rgba(204,68,68,0.2);
+}
+
+.dm-card .dm-name {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.dm-card .dm-amount {
+  font-family: var(--font-display);
+  font-size: 36px;
+  color: var(--red);
+}
+
+.dead-money .dm-total {
+  font-size: 13px;
+  color: var(--gray);
+}
+
+.dead-money .dm-total strong { color: var(--white); }
+
+/* Fields block */
+.fields-block {
+  border: 2px solid var(--gold);
+  background: rgba(196,169,69,0.06);
+  padding: 28px 32px;
+  margin-bottom: 60px;
+}
+
+.fields-block h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.fields-block p {
+  font-size: 13px;
+  color: var(--gray);
+  line-height: 1.8;
+  max-width: 640px;
+}
+
+.fields-block p strong { color: var(--white); }
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin: 16px 0;
+}
+
+.fields-stat {
+  background: rgba(0,0,0,0.3);
+  padding: 12px 16px;
+  border: 1px solid rgba(196,169,69,0.15);
+}
+
+.fields-stat .label {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-dark);
+}
+
+.fields-stat .value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--gold);
+}
+
+/* Draft capital block */
+.capital-block {
+  border: 3px solid var(--green);
+  background: rgba(18,87,64,0.06);
+  padding: 32px;
+}
+
+.capital-block h3 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.capital-block .cap-sub {
+  font-size: 11px;
+  color: var(--gray);
+  letter-spacing: 0.06em;
+  margin-bottom: 20px;
+}
+
+.capital-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.capital-year h4 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  color: var(--green-bright);
+}
+
+.capital-pick {
+  font-size: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(42,42,42,0.4);
+  color: var(--gray);
+}
+
+.capital-pick strong { color: var(--white); }
+.capital-pick .via { color: var(--green-bright); font-size: 10px; }
+
+/* ===== SITUATION / SCHEME ===== */
+.situation {
+  background: var(--black);
+  border-bottom: 1px solid var(--border);
+}
+
+.situation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2px;
+  margin-bottom: 60px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 28px 24px;
+  transition: border-color 0.3s;
+}
+.stat-card:hover { border-color: var(--green); }
+
+.stat-card .stat-value {
+  font-family: var(--font-display);
+  font-size: 52px;
+  line-height: 1;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.stat-card .stat-value.green { color: var(--green-bright); }
+
+.stat-card .stat-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray);
+  line-height: 1.5;
+}
+
+.scheme-block {
+  margin-top: 0;
+  border-left: 3px solid var(--green);
+  padding: 24px 28px;
+  background: rgba(18,87,64,0.08);
+  margin-bottom: 2px;
+}
+
+.scheme-block h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+
+.scheme-block p {
+  color: var(--gray);
+  font-size: 13px;
+  max-width: 600px;
+}
+
+.scheme-block p strong { color: var(--white); font-weight: 600; }
+
+/* ===== MOVES ===== */
+.move {
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.move:nth-child(even) {
+  background: var(--off-black);
+}
+
+.move-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 100px 40px;
+  position: relative;
+}
+
+.move-number {
+  font-family: var(--font-display);
+  font-size: clamp(160px, 22vw, 320px);
+  line-height: 0.75;
+  color: rgba(18,87,64,0.12);
+  position: absolute;
+  top: 40px;
+  right: -20px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.move-overline {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green-bright);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.move-player {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 8vw, 100px);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.move-position {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 36px;
+  position: relative;
+}
+
+.move-position span {
+  color: var(--green-bright);
+}
+
+.move-body {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 60px;
+  position: relative;
+}
+
+.move-text p {
+  color: var(--gray);
+  font-size: 14px;
+  line-height: 1.85;
+  margin-bottom: 20px;
+}
+
+.move-text strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.move-callout {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--white);
+  border-left: 3px solid var(--green);
+  padding-left: 20px;
+  margin: 28px 0;
+}
+
+.move-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.move-stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.move-stat .label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+.move-stat .value {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--white);
+  text-align: right;
+}
+
+.move-stat .value.green { color: var(--green-bright); }
+.move-stat .value.highlight {
+  background: var(--green);
+  color: var(--white);
+  padding: 2px 8px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.why-not {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+}
+
+.why-not h4 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  color: var(--gray);
+  margin-bottom: 8px;
+}
+
+.why-not p {
+  font-size: 12px;
+  color: var(--gray-dark);
+  line-height: 1.7;
+}
+
+/* ===== LEDGER ===== */
+.ledger {
+  background: var(--green);
+  border-top: 4px solid var(--white);
+  border-bottom: 4px solid var(--white);
+}
+
+.ledger .section-label { color: rgba(240,239,233,0.5); }
+
+.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.ledger-table thead th {
+  text-align: left;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(240,239,233,0.4);
+  padding: 0 0 14px 0;
+  border-bottom: 2px solid rgba(240,239,233,0.2);
+  font-weight: 500;
+}
+
+.ledger-table thead th:last-child { text-align: right; }
+
+.ledger-table tbody td {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(240,239,233,0.1);
+  color: rgba(240,239,233,0.8);
+}
+
+.ledger-table tbody td:last-child {
+  text-align: right;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.ledger-table tbody tr:hover td { color: var(--white); }
+
+.ledger-table tbody tr.dead-row td { color: rgba(240,239,233,0.35); }
+.ledger-table tbody tr.dead-row td:last-child { color: rgba(204,68,68,0.7); }
+
+.ledger-table tfoot td {
+  padding: 18px 0 0 0;
+  border-top: 2px solid rgba(240,239,233,0.3);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--white);
+}
+
+.ledger-table tfoot td:last-child { text-align: right; }
+
+.ledger-remaining {
+  margin-top: 40px;
+  padding: 20px 24px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(240,239,233,0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.ledger-remaining .label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(240,239,233,0.5);
+}
+
+.ledger-remaining .value {
+  font-family: var(--font-display);
+  font-size: 40px;
+  color: var(--white);
+}
+
+/* ===== ROSTER ===== */
+.roster {
+  background: var(--off-black);
+  border-bottom: 1px solid var(--border);
+}
+
+.roster-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.roster-side h3 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: 0.06em;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--green);
+}
+
+.roster-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.roster-row .pos {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+  width: 50px;
+  flex-shrink: 0;
+}
+
+.roster-row .name {
+  flex: 1;
+  color: var(--white);
+  font-weight: 500;
+}
+
+.roster-row .source {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  color: var(--gray);
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.roster-row .source.fa { border-color: var(--green); color: var(--green-bright); }
+.roster-row .source.draft { border-color: var(--gold); color: var(--gold); }
+.roster-row .source.trade { border-color: var(--blue); color: var(--blue); }
+.roster-row .source.tag { border-color: #d97b5b; color: #d97b5b; }
+
+.roster-row.need .name {
+  color: var(--gray-dark);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.roster-note {
+  margin-top: 60px;
+  padding: 32px;
+  border: 3px solid var(--green);
+  background: rgba(18,87,64,0.06);
+}
+
+.roster-note h3 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  margin-bottom: 12px;
+  border: none;
+}
+
+.roster-note p {
+  color: var(--gray);
+  font-size: 13px;
+  line-height: 1.8;
+  max-width: 640px;
+}
+
+.roster-note p strong { color: var(--white); }
+
+/* ===== CAP PROJECTION ===== */
+.cap-projection {
+  background: var(--black);
+  border-bottom: 1px solid var(--border);
+}
+
+.cap-table-outer {
+  overflow-x: auto;
+}
+
+.cap-proj-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  min-width: 600px;
+}
+
+.cap-proj-table th {
+  text-align: left;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gray-dark);
+  padding: 0 12px 12px 0;
+  border-bottom: 2px solid var(--border);
+  font-weight: 500;
+}
+
+.cap-proj-table th:not(:first-child) { text-align: right; }
+
+.cap-proj-table td {
+  padding: 12px 12px 12px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--gray);
+}
+
+.cap-proj-table td:not(:first-child) { text-align: right; }
+.cap-proj-table td:first-child { color: var(--white); font-weight: 500; }
+
+.cap-proj-table tr.total-row td {
+  border-top: 2px solid var(--green);
+  font-weight: 700;
+  color: var(--white);
+  font-size: 13px;
+  padding-top: 16px;
+}
+
+.cap-proj-table tr.total-row td.green { color: var(--green-bright); }
+
+.cap-note {
+  margin-top: 24px;
+  font-size: 11px;
+  color: var(--gray-dark);
+  line-height: 1.8;
+}
+
+/* ===== PART 2 TEASER ===== */
+.teaser {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 4px solid var(--green);
+}
+
+.teaser::before {
+  content: 'DRAFT';
+  font-family: var(--font-display);
+  font-size: clamp(120px, 20vw, 300px);
+  color: rgba(18,87,64,0.07);
+  position: absolute;
+  pointer-events: none;
+}
+
+.teaser .section-label { margin-bottom: 20px; }
+
+.teaser-title {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 7vw, 90px);
+  line-height: 0.95;
+  margin-bottom: 32px;
+}
+
+.teaser-text {
+  color: var(--gray);
+  font-size: 13px;
+  max-width: 500px;
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+
+.teaser-needs {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.teaser-need {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  color: var(--gray);
+  transition: all 0.3s;
+}
+
+.teaser-need:hover {
+  border-color: var(--green);
+  color: var(--green-bright);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 60px 0;
+  border-top: 1px solid var(--border);
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.footer-sources h4 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+  color: var(--gray);
+}
+
+.footer-sources a {
+  display: block;
+  color: var(--gray-dark);
+  text-decoration: none;
+  font-size: 11px;
+  line-height: 2.2;
+  transition: color 0.2s;
+}
+
+.footer-sources a:hover { color: var(--green-bright); }
+
+.footer-colophon {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-dark);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 800px) {
+  .hero { padding: 40px 24px 60px; }
+  .container { padding: 0 24px; }
+  section { padding: 72px 0; }
+  .move-inner { padding: 72px 24px; }
+  .move-body { grid-template-columns: 1fr; gap: 36px; }
+  .player-bg-img.action { width: 70%; }
+  .player-bg-img.headshot { height: 280px; right: -20px; }
+  .player-bg-img.logo { width: 200px; }
+  .player-bg-img.hero-logo { width: 200px; right: 2%; }
+  .move-number { font-size: 140px; top: 20px; right: -10px; }
+  .roster-grid { grid-template-columns: 1fr; gap: 48px; }
+  .situation-grid { grid-template-columns: 1fr 1fr; }
+  .split-grid { grid-template-columns: 1fr; gap: 40px; }
+  .dead-money-grid { grid-template-columns: 1fr; }
+  .fields-grid { grid-template-columns: 1fr 1fr; }
+  .capital-grid { grid-template-columns: 1fr; gap: 32px; }
+  nav { padding: 0 20px; }
+  nav .nav-links { gap: 16px; }
+  .hero-meta { gap: 20px; }
+  .ledger-remaining { flex-direction: column; gap: 8px; }
+}
+
+@media (max-width: 500px) {
+  .situation-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 56px; }
+  .hero-meta { flex-direction: column; gap: 8px; }
+  .fields-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== PLAYER BG IMAGES ===== */
+.player-bg-img {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  filter: grayscale(100%) contrast(1.3);
+  opacity: 0.09;
+  mix-blend-mode: luminosity;
+  -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 70%);
+  mask-image: linear-gradient(to left, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 70%);
+}
+.player-bg-img.action {
+  right: -60px;
+  bottom: 0;
+  width: 55%;
+  height: auto;
+  object-fit: cover;
+}
+.player-bg-img.headshot {
+  right: -40px;
+  bottom: -20px;
+  height: 420px;
+  width: auto;
+}
+.player-bg-img.logo {
+  opacity: 0.04;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 340px;
+  height: auto;
+  filter: grayscale(100%);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.player-bg-img.hero-logo {
+  opacity: 0.035;
+  position: absolute;
+  right: 4%;
+  bottom: 10%;
+  width: 380px;
+  height: auto;
+  filter: grayscale(100%) brightness(1.5);
+  -webkit-mask-image: none;
+  mask-image: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== FADE IN ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- Scroll Progress -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Nav -->
+<nav id="nav">
+  <div class="nav-left">FIXING THE JETS <span>// PART 1</span></div>
+  <div class="nav-links">
+    <a href="#teardown">Teardown</a>
+    <a href="#blueprint">Blueprint</a>
+    <a href="#moves">Moves</a>
+    <a href="#ledger">Ledger</a>
+    <a href="#roster">Roster</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <img class="player-bg-img hero-logo" src="https://a.espncdn.com/combiner/i?img=/i/teamlogos/nfl/500/nyj.png&h=200&w=200" alt="New York Jets" loading="lazy">
+  <div class="hero-part">Part 1 of 2 — Free Agency</div>
+  <h1 class="hero-title">FIXING<br>THE JETS</h1>
+  <p class="hero-subtitle">5 FREE AGENCY MOVES TO RESTORE RESPECTABILITY</p>
+  <div class="hero-meta">
+    <span>February 2026</span>
+    <span>~$91M Cap Space</span>
+    <span>#2 + #16 Overall Picks</span>
+    <span>$55.8M Dead Money</span>
+    <span>The Aaron Glenn Era</span>
+  </div>
+</header>
+
+<!-- ===== THE TEARDOWN ===== -->
+<section class="teardown" id="teardown">
+  <div class="container">
+    <div class="section-label fade-in">// 001</div>
+    <h2 class="section-title fade-in">THE TEARDOWN</h2>
+
+    <div class="teardown-intro fade-in">
+      <p>
+        This isn't a story about one bad season. It's about a franchise that <em>burned itself to the studs</em> to rebuild the right way. Over the last two years, the Jets shed every marquee name on the roster — willingly, aggressively, and with a plan. Aaron Rodgers. Sauce Gardner. Quinnen Williams. Davante Adams. C.J. Mosley. D.J. Reed. The entire identity of the team walked out the door.
+      </p>
+      <p style="margin-top:16px;">
+        The defining moment came on a single day:
+      </p>
+      <span class="big-date">November 4, 2025</span>
+      <p>
+        The Jets traded <em>Sauce Gardner</em> — the Defensive Rookie of the Year, two-time first-team All-Pro, and the best cornerback in football — to Indianapolis. Hours later, they shipped <em>Quinnen Williams</em> — three-time Pro Bowler, the No. 3 overall pick from 2019 — to Dallas. Two franchise cornerstones. Same day. The signal was unmistakable: <em>this is a reload, not a repair.</em>
+      </p>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline fade-in">
+      <div class="tl-event major">
+        <div class="tl-date">March 2025</div>
+        <div class="tl-title">RODGERS ERA ENDS</div>
+        <div class="tl-detail">Jets release <strong>Aaron Rodgers</strong>, ending the most expensive failed experiment in franchise history. Sign <strong>Justin Fields</strong> to 2yr/$40M deal with $30M guaranteed.</div>
+      </div>
+
+      <div class="tl-event">
+        <div class="tl-date">March 2025 — Free Agency Exodus</div>
+        <div class="tl-title">THE ROSTER EMPTIES</div>
+        <div class="tl-detail">
+          <strong>Davante Adams</strong> signs with the Rams. <strong>D.J. Reed</strong> signs with the Lions. <strong>Tyler Conklin</strong> signs with the Chargers. <strong>Morgan Moses</strong> signs with the Patriots. <strong>Haason Reddick</strong> signs with the Bucs. <strong>C.J. Mosley</strong> released, later retires in June.
+        </div>
+      </div>
+
+      <div class="tl-event">
+        <div class="tl-date">April 2025 — NFL Draft</div>
+        <div class="tl-title">THE YOUTH MOVEMENT BEGINS</div>
+        <div class="tl-detail">Jets select <strong>RT Armand Membou</strong> at #7 overall (earns All-Rookie honors). Take <strong>TE Mason Taylor</strong> in Round 2 (game-winning TD in first Jets victory). The rookie class starts all 17 games together on the O-line.</div>
+      </div>
+
+      <div class="tl-event major">
+        <div class="tl-date">November 4, 2025 — Trade Deadline</div>
+        <div class="tl-title">THE DAY EVERYTHING CHANGED</div>
+        <div class="tl-detail">Jets trade <strong>Sauce Gardner</strong> and <strong>Quinnen Williams</strong> within hours of each other. The two best players on the roster. Gone.</div>
+        <div class="tl-haul">
+          <span class="tl-chip out">OUT: Sauce Gardner</span>
+          <span class="tl-chip in">IN: 2026 1st (IND)</span>
+          <span class="tl-chip in">IN: 2027 1st (IND)</span>
+          <span class="tl-chip in">IN: WR Adonai Mitchell</span>
+        </div>
+        <div class="tl-haul" style="margin-top:4px;">
+          <span class="tl-chip out">OUT: Quinnen Williams</span>
+          <span class="tl-chip in">IN: 2026 2nd (DAL)</span>
+          <span class="tl-chip in">IN: 2027 1st (DAL/GB)</span>
+          <span class="tl-chip in">IN: DT Mazi Smith</span>
+        </div>
+      </div>
+
+      <div class="tl-event">
+        <div class="tl-date">November 2025 — Additional Moves</div>
+        <div class="tl-title">CLEARING THE DECK</div>
+        <div class="tl-detail"><strong>Mike Williams</strong> traded to Steelers for a 5th. <strong>Michael Carter II</strong> traded to Eagles for WR <strong>John Metchie III</strong> + pick swap. CB <strong>Ja'Sir Taylor</strong> acquired from Chargers.</div>
+      </div>
+
+      <div class="tl-event">
+        <div class="tl-date">January 2026</div>
+        <div class="tl-title">GLENN & MOUGEY TAKE THE WHEEL</div>
+        <div class="tl-detail"><strong>Aaron Glenn</strong> hired as HC — the former Lions DC who built Detroit's defense. <strong>Darren Mougey</strong> named GM — Denver's long-tenured personnel architect. Glenn declares he will personally call the defense.</div>
+      </div>
+
+      <div class="tl-event major">
+        <div class="tl-date">February 26, 2026</div>
+        <div class="tl-title">THE SWEAT TRADE</div>
+        <div class="tl-detail"><strong>Jermaine Johnson</strong> traded to the Titans for <strong>T'Vondre Sweat</strong> — a 24-year-old, 340-lb nose tackle on a cheap rookie deal with two years of control. Reuniting Johnson with his former coach Robert Saleh in Tennessee.</div>
+        <div class="tl-haul">
+          <span class="tl-chip out">OUT: Jermaine Johnson ($13.4M 5th-yr option)</span>
+          <span class="tl-chip in">IN: T'Vondre Sweat (24, 2 yrs left)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT LEFT / WHAT CAME BACK -->
+    <div class="split-grid fade-in">
+      <div class="split-col gone">
+        <h3>WHO LEFT (2025-26)</h3>
+        <div class="split-row"><span class="name">Sauce Gardner</span><span class="pos">CB</span><span class="dest">→ IND</span></div>
+        <div class="split-row"><span class="name">Quinnen Williams</span><span class="pos">DT</span><span class="dest">→ DAL</span></div>
+        <div class="split-row"><span class="name">Jermaine Johnson</span><span class="pos">EDGE</span><span class="dest">→ TEN</span></div>
+        <div class="split-row"><span class="name">Aaron Rodgers</span><span class="pos">QB</span><span class="dest">Released</span></div>
+        <div class="split-row"><span class="name">Davante Adams</span><span class="pos">WR</span><span class="dest">→ LAR</span></div>
+        <div class="split-row"><span class="name">C.J. Mosley</span><span class="pos">ILB</span><span class="dest">Retired</span></div>
+        <div class="split-row"><span class="name">D.J. Reed</span><span class="pos">CB</span><span class="dest">→ DET</span></div>
+        <div class="split-row"><span class="name">Haason Reddick</span><span class="pos">EDGE</span><span class="dest">→ TB</span></div>
+        <div class="split-row"><span class="name">Tyler Conklin</span><span class="pos">TE</span><span class="dest">→ LAC</span></div>
+        <div class="split-row"><span class="name">Morgan Moses</span><span class="pos">OT</span><span class="dest">→ NE</span></div>
+        <div class="split-row"><span class="name">Mike Williams</span><span class="pos">WR</span><span class="dest">→ PIT</span></div>
+        <div class="split-row"><span class="name">Michael Carter II</span><span class="pos">CB</span><span class="dest">→ PHI</span></div>
+      </div>
+
+      <div class="split-col got">
+        <h3>WHAT CAME BACK</h3>
+        <div class="split-row"><span class="name">2026 1st Round (#16)</span><span class="pos">Pick</span><span class="dest">via IND</span></div>
+        <div class="split-row"><span class="name">2026 2nd Round</span><span class="pos">Pick</span><span class="dest">via DAL</span></div>
+        <div class="split-row"><span class="name">2027 1st Round</span><span class="pos">Pick</span><span class="dest">via IND</span></div>
+        <div class="split-row"><span class="name">2027 1st Round</span><span class="pos">Pick</span><span class="dest">via DAL/GB</span></div>
+        <div class="split-row"><span class="name">Adonai Mitchell</span><span class="pos">WR</span><span class="dest">via IND</span></div>
+        <div class="split-row"><span class="name">Mazi Smith</span><span class="pos">DT</span><span class="dest">via DAL</span></div>
+        <div class="split-row"><span class="name">T'Vondre Sweat</span><span class="pos">NT</span><span class="dest">via TEN</span></div>
+        <div class="split-row"><span class="name">John Metchie III</span><span class="pos">WR</span><span class="dest">via PHI</span></div>
+        <div class="split-row"><span class="name">Ja'Sir Taylor</span><span class="pos">CB</span><span class="dest">via LAC</span></div>
+        <div class="split-row"><span class="name">Armand Membou</span><span class="pos">RT</span><span class="dest">#7 Pick</span></div>
+        <div class="split-row"><span class="name">Mason Taylor</span><span class="pos">TE</span><span class="dest">2nd Rd Pick</span></div>
+      </div>
+    </div>
+
+    <!-- DEAD MONEY -->
+    <div class="dead-money fade-in">
+      <h3>THE GHOSTS ON THE CAP — $55.8M DEAD MONEY</h3>
+      <div class="dead-money-grid">
+        <div class="dm-card">
+          <div class="dm-name">Aaron Rodgers</div>
+          <div class="dm-amount">$35M</div>
+        </div>
+        <div class="dm-card">
+          <div class="dm-name">Sauce Gardner</div>
+          <div class="dm-amount">$11M</div>
+        </div>
+        <div class="dm-card">
+          <div class="dm-name">Quinnen Williams</div>
+          <div class="dm-amount">$9.8M</div>
+        </div>
+      </div>
+      <p class="dm-total">The Jets are paying <strong>$55.8 million in 2026</strong> to three players who will never wear green again. This is the price of the teardown. It's also why they have $91M in cap space instead of $145M. The Rodgers dead cap finally clears after this season.</p>
+    </div>
+
+    <!-- FIELDS ELEPHANT -->
+    <div class="fields-block fade-in">
+      <h3>THE JUSTIN FIELDS PROBLEM</h3>
+      <div class="fields-grid">
+        <div class="fields-stat">
+          <div class="label">2025 PFF Grade</div>
+          <div class="value">67.3</div>
+        </div>
+        <div class="fields-stat">
+          <div class="label">QB Rank</div>
+          <div class="value">32/43</div>
+        </div>
+        <div class="fields-stat">
+          <div class="label">2026 Cap Hit</div>
+          <div class="value">$23M</div>
+        </div>
+        <div class="fields-stat">
+          <div class="label">Dead if Cut</div>
+          <div class="value">$22M</div>
+        </div>
+      </div>
+      <p>
+        Fields signed for 2yr/$40M with $30M guaranteed. He went <strong>2-7 as a starter</strong>, was benched for Tyrod Taylor in Week 12, and graded out 32nd of 43 QBs per PFF. Reports indicate the Jets will <strong>likely release him</strong> this offseason. The problem: cutting him pre-June 1 only saves <strong>$1M</strong> ($22M dead cap). A post-June 1 designation saves $10M, but that money doesn't hit until summer — after free agency is over. Fields is a $22-23M ghost regardless of what happens. The cap math in this plan accounts for that reality.
+      </p>
+    </div>
+
+    <!-- DRAFT CAPITAL -->
+    <div class="capital-block fade-in">
+      <h3>THE WAR CHEST</h3>
+      <p class="cap-sub">Eight picks in the first two rounds across 2026-2027. Three first-rounders in 2027.</p>
+      <div class="capital-grid">
+        <div class="capital-year">
+          <h4>2026 DRAFT</h4>
+          <div class="capital-pick"><strong>1st Round — #2 Overall</strong> (Own)</div>
+          <div class="capital-pick"><strong>1st Round — #16 Overall</strong> <span class="via">via IND (Sauce)</span></div>
+          <div class="capital-pick"><strong>2nd Round</strong> <span class="via">via DAL (Q. Williams)</span></div>
+          <div class="capital-pick">3rd Round (Own)</div>
+          <div class="capital-pick">4th Round (Own)</div>
+          <div class="capital-pick">7th Round (Own)</div>
+        </div>
+        <div class="capital-year">
+          <h4>2027 DRAFT</h4>
+          <div class="capital-pick"><strong>1st Round</strong> (Own)</div>
+          <div class="capital-pick"><strong>1st Round</strong> <span class="via">via IND (Sauce)</span></div>
+          <div class="capital-pick"><strong>1st Round</strong> <span class="via">via DAL/GB (Q. Williams)</span></div>
+          <div class="capital-pick">+ Full complement of remaining picks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BLUEPRINT / SCHEME ===== -->
+<section class="situation" id="blueprint">
+  <div class="container">
+    <div class="section-label fade-in">// 002</div>
+    <h2 class="section-title fade-in">THE BLUEPRINT</h2>
+
+    <div class="situation-grid fade-in">
+      <div class="stat-card">
+        <div class="stat-value">3-14</div>
+        <div class="stat-label">2025 Record<br>Dead last in the AFC East</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value green">$91M</div>
+        <div class="stat-label">Available Cap Space<br>4th most in the NFL</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">#2</div>
+        <div class="stat-label">Overall Pick<br>+ #16 in the same draft</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value green">8</div>
+        <div class="stat-label">Picks in Rounds 1-2<br>Across '26 and '27 drafts</div>
+      </div>
+    </div>
+
+    <div class="scheme-block fade-in">
+      <h3>GLENN'S DEFENSE: THE SCHEME</h3>
+      <p>Hybrid front. Even-front, one-gap principles that can flex into 3-4 looks. Versatile, athletic defenders who play multiple roles. Think Detroit — aggressive, multiple, built on the front seven. With Sweat at nose tackle and Mazi Smith as the incumbent DT, Glenn needs impact at edge, inside linebacker, and safety. <strong>He is calling his own defense.</strong></p>
+    </div>
+
+    <div class="scheme-block fade-in">
+      <h3>DRAFT ASSUMPTION</h3>
+      <p><strong>Arvell Reese, EDGE, Ohio State</strong> at #2 overall. The freak athlete is one of the fastest edge rushers in the 2026 class. After trading Jermaine Johnson, this pick writes itself. <strong>Breece Hall</strong> will be franchise or transition tagged (~$12M). The rest — we address in free agency. The #16 pick and Day 2 capital will be covered in Part 2: The Draft Board.</p>
+    </div>
+
+    <div class="scheme-block fade-in">
+      <h3>THE YOUNG CORE ALREADY IN PLACE</h3>
+      <p>The teardown wasn't just subtraction. The Jets have assembled a young foundation: <strong>Garrett Wilson</strong> (WR1, $10M cap hit in year 1 of his extension), <strong>Will McDonald IV</strong> (EDGE, 21.5 career sacks, 5th-year option being picked up — the Jets' best pass rusher), <strong>Jamien Sherwood</strong> (ILB, 154 tackles, locked in on $45M extension), <strong>Olu Fashanu</strong> (LT, dominant), <strong>Armand Membou</strong> (RT, All-Rookie — they formed the NFL's 3rd-best tackle duo by pass-block grade over the final 12 weeks), <strong>Joe Tippmann</strong> (C, 24, played every snap in 2025 — extension candidate), <strong>Mason Taylor</strong> (TE, game-winner as a rookie), <strong>Adonai Mitchell</strong> (WR, vertical threat from the Sauce trade), <strong>T'Vondre Sweat</strong> (NT, 24, from the Johnson trade), <strong>Mazi Smith</strong> (DT, from the Q trade). The O-line started the same five all 17 games, all 27 or younger — though both guards (John Simpson and AVT) are now UFAs. Free agency fills the gaps around this core.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE MOVES ===== -->
+<div id="moves">
+
+<!-- MOVE 1 -->
+<article class="move">
+  <div class="move-inner">
+    <div class="move-number">01</div>
+    <img class="player-bg-img action" src="https://a.espncdn.com/photo/2025/1015/r1560569_1296x864_3-2.jpg" alt="Garrett Wilson" loading="lazy">
+    <div class="move-overline fade-in">Move 01 — Go Get Your Quarterback</div>
+    <h2 class="move-player fade-in">MALIK<br>WILLIS</h2>
+    <div class="move-position fade-in">QB <span>|</span> Age 26 <span>|</span> Green Bay Packers</div>
+
+    <div class="move-body fade-in">
+      <div class="move-text">
+        <p>
+          This is <strong>the move</strong>. Forget the bridge quarterbacks. Forget another retread. The Jets have already tried that with Rodgers and Fields — combined cost: over $100M in dead money and cap commitments for a combined record of 6-25. Malik Willis is 26 years old, spent two years learning behind Jordan Love in one of the NFL's best offensive systems, and is the most coveted QB in this free agent class.
+        </p>
+        <div class="move-callout">
+          Willis is mobile, has a cannon arm, and is young enough that this isn't a rental — it's the first real swing at a franchise quarterback since the Jets drafted Sam Darnold.
+        </div>
+        <p>
+          Multiple reports confirm the Jets will be "big players" for Willis. Green Bay's Brian Gutekunst has publicly conceded they'll likely lose him. The Jets should be first in line. Give Willis Garrett Wilson, Adonai Mitchell, Mason Taylor, Breece Hall, and an elite tackle duo in Fashanu and Membou. That's a <strong>real supporting cast</strong> — something the Jets haven't had around a QB in years.
+        </p>
+        <div class="why-not">
+          <h4>WHY NOT COUSINS?</h4>
+          <p>He's 37. After burning $100M+ on veteran QBs who didn't work, the answer is not another one. Kirk Cousins went 5-3 with Atlanta and threw 10 TDs — fine for a bridge. But this franchise needs to stop bridging and start building. Willis is the future.</p>
+        </div>
+      </div>
+      <div class="move-sidebar">
+        <div class="move-stat">
+          <span class="label">Projected Deal</span>
+          <span class="value">3yr / $100M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">AAV</span>
+          <span class="value green">$33M/yr</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Guaranteed</span>
+          <span class="value">$55M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Year 1 Cap Hit</span>
+          <span class="value green">~$22M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Age at Signing</span>
+          <span class="value">26</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Scheme Fit</span>
+          <span class="value highlight">High</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- MOVE 2 -->
+<article class="move">
+  <div class="move-inner">
+    <div class="move-number">02</div>
+    <img class="player-bg-img action" src="https://a.espncdn.com/photo/2024/1108/r1412226_1296x864_3-2.jpg" alt="Will McDonald IV" loading="lazy">
+    <div class="move-overline fade-in">Move 02 — Unleash the Pass Rush</div>
+    <h2 class="move-player fade-in">ODAFE<br>OWEH</h2>
+    <div class="move-position fade-in">EDGE <span>|</span> Age 27 <span>|</span> Los Angeles Chargers</div>
+
+    <div class="move-body fade-in">
+      <div class="move-text">
+        <p>
+          The Jets already have <strong>Will McDonald IV</strong> — 21.5 career sacks, 8 in 2025, 5th-year option being picked up. He's a legitimate starter. But Glenn's defense eats edge rushers. You can never have enough. With Reese at #2 and McDonald returning, adding Oweh gives you a <strong>three-headed monster</strong> that can rotate and stay fresh. Oweh exploded after his midseason trade from Baltimore to the Chargers: <strong>7.5 sacks in 12 games</strong>. He's long-armed, explosive, and at 27 he's entering his prime.
+        </p>
+        <div class="move-callout">
+          In Glenn's hybrid front, Oweh can stand up as a 3-4 OLB or put his hand in the dirt as a 4-3 DE. His versatility is exactly what this defense demands.
+        </div>
+        <p>
+          A rotation of Reese, McDonald, Oweh, and Chubb with Sweat and Mazi Smith clogging the interior — that's a defensive front with pass-rush juice from every angle. The Chargers have ~$100M in cap space and may try to retain him — the Jets need to outbid aggressively. This is the kind of player you overpay for because the positional value is enormous.
+        </p>
+        <div class="why-not">
+          <h4>WHY NOT HENDRICKSON?</h4>
+          <p>Trey Hendrickson is 31 and coming off core muscle surgery that limited him to 4 sacks in 7 games. He got $29M from the Bengals last year. Why pay for the decline when you can pay for the ascent? Oweh is four years younger with a higher ceiling.</p>
+        </div>
+      </div>
+      <div class="move-sidebar">
+        <div class="move-stat">
+          <span class="label">Projected Deal</span>
+          <span class="value">4yr / $76M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">AAV</span>
+          <span class="value green">$19M/yr</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Guaranteed</span>
+          <span class="value">$45M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Year 1 Cap Hit</span>
+          <span class="value green">~$14M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">2025 Sacks</span>
+          <span class="value">7.5 in 12 GP</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Scheme Fit</span>
+          <span class="value highlight">High</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- MOVE 3 -->
+<article class="move">
+  <div class="move-inner">
+    <div class="move-number">03</div>
+    <div class="move-overline fade-in">Move 03 — The Quarterback of the Defense</div>
+    <h2 class="move-player fade-in">QUAY<br>WALKER</h2>
+    <div class="move-position fade-in">ILB <span>|</span> Age 25 <span>|</span> Green Bay Packers</div>
+
+    <div class="move-body fade-in">
+      <div class="move-text">
+        <p>
+          The Jets have <strong>Jamien Sherwood</strong> locked in at $45M — 154 tackles in 2025, he's not going anywhere ($25M dead cap). But Sherwood struggled in coverage and was benched for a stretch. He needs a partner who elevates the room, not another liability. With C.J. Mosley retired and Quincy Williams a UFA, that partner is Quay Walker — a four-time 100-tackle linebacker with 9 career sacks and 29 tackles for loss. He's only 25. The Packers declined his 5th-year option worth $14.7M — their loss, Glenn's gain.
+        </p>
+        <div class="move-callout">
+          This is the move nobody will talk about on television. It's the one that makes the defense work.
+        </div>
+        <p>
+          Walker is the prototypical modern three-down ILB. He can blitz, he can cover, and he tackles sideline to sideline — the exact skill set Sherwood lacks in coverage. <strong>Walker + Sherwood</strong> gives you a run-stuffing thumper paired with a sideline-to-sideline playmaker. In a defense built around Reese, McDonald, and Oweh hunting the quarterback and Sweat clogging the middle, <strong>those two clean up everything in between</strong>. At 25, the Jets would be getting Walker's best years — the exact timeline this rebuild demands.
+        </p>
+      </div>
+      <div class="move-sidebar">
+        <div class="move-stat">
+          <span class="label">Projected Deal</span>
+          <span class="value">4yr / $52M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">AAV</span>
+          <span class="value green">$13M/yr</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Guaranteed</span>
+          <span class="value">$32M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Year 1 Cap Hit</span>
+          <span class="value green">~$10M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Career Tackles</span>
+          <span class="value">400+ (4× 100)</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Scheme Fit</span>
+          <span class="value highlight">Elite</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- MOVE 4 -->
+<article class="move">
+  <div class="move-inner">
+    <div class="move-number">04</div>
+    <img class="player-bg-img action" src="https://a.espncdn.com/photo/2025/0804/r1527757_1296x864_3-2.jpg" alt="Jamien Sherwood" loading="lazy">
+    <div class="move-overline fade-in">Move 04 — Fix the Secondary</div>
+    <h2 class="move-player fade-in">BRYAN<br>COOK</h2>
+    <div class="move-position fade-in">S <span>|</span> Age 26 <span>|</span> Kansas City Chiefs</div>
+
+    <div class="move-body fade-in">
+      <div class="move-text">
+        <p>
+          The Jets lost <strong>everything</strong> in the secondary. Sauce Gardner — traded. D.J. Reed — signed with Detroit. Michael Carter II — traded. The safety room was already the worst unit on the team. The cupboard isn't bare — it's been demolished. Bryan Cook is the first piece of putting it back together.
+        </p>
+        <div class="move-callout">
+          Glenn's defense needs a tone-setter in the secondary. A hitter. A communicator. Someone who's been in the biggest moments football has to offer. Cook is all of that.
+        </div>
+        <p>
+          Cook is a 26-year-old <strong>Super Bowl champion</strong> from Kansas City who plays with the physicality and intelligence Glenn demands. He's a box safety who can come downhill and punish the run but has improved in coverage every year. At ~$11M/yr, he's a value signing at a position of desperate need. The secondary will need more — cornerback is a massive hole addressed in Part 2 — but Cook gives you the anchor to build around.
+        </p>
+      </div>
+      <div class="move-sidebar">
+        <div class="move-stat">
+          <span class="label">Projected Deal</span>
+          <span class="value">4yr / $44M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">AAV</span>
+          <span class="value green">$11M/yr</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Guaranteed</span>
+          <span class="value">$26M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Year 1 Cap Hit</span>
+          <span class="value green">~$8M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Pedigree</span>
+          <span class="value">Super Bowl Champ</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Scheme Fit</span>
+          <span class="value highlight">High</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<!-- MOVE 5 -->
+<article class="move">
+  <div class="move-inner">
+    <div class="move-number">05</div>
+    <div class="move-overline fade-in">Move 05 — The Mougey Reunion + Protect Your QB</div>
+    <h2 class="move-player fade-in">BRADLEY CHUBB<br><span style="font-size:0.55em;color:var(--gray);">+ ALIJAH VERA-TUCKER</span></h2>
+    <div class="move-position fade-in">EDGE + OG <span>|</span> Age 30 / 25 <span>|</span> Released by MIA / NYJ Own FA</div>
+
+    <div class="move-body fade-in">
+      <div class="move-text">
+        <p>
+          The final move is a two-part play. <strong>Bradley Chubb and Darren Mougey overlapped in Denver for four-plus years.</strong> Mougey was in the building when the Broncos drafted Chubb 5th overall in 2018, watched his 12-sack rookie season, saw his work ethic, his medicals, his recovery, his leadership. This is the kind of intel advantage GMs build careers on.
+        </p>
+        <div class="move-callout">
+          8.5 sacks in 2025 after missing all of 2024 with a torn ACL, meniscus, and patellar tendon. Won AFC Defensive Player of the Week in Week 17. He's not done.
+        </div>
+        <p>
+          Miami released him to save $7.3M. At 30, on a 1-year prove-it deal, the risk is minimal — if he's healthy, you're getting an 8+ sack edge rusher for $8M rotating behind Reese and Oweh. Three-deep at edge is how Glenn wants to play.
+        </p>
+        <p>
+          Then <strong>re-sign Alijah Vera-Tucker</strong> at guard. With Fashanu and Membou locked in at tackle, AVT slots inside to protect Willis. He's versatile, the Jets know him, and he's a buy-low coming off a torn triceps. The offensive line: Fashanu–Need–Tippmann–AVT–Membou. Four of five locked in, all 27 or younger. Tippmann played all 1,045 snaps at center. AVT slides back to right guard where he started in 2025. Left guard — where John Simpson was an elite run blocker in 2024 before falling off — becomes a draft or value FA target.
+        </p>
+      </div>
+      <div class="move-sidebar">
+        <div class="move-stat" style="background:var(--green);border-color:var(--green);">
+          <span class="label" style="color:rgba(240,239,233,0.6);">Chubb — Deal</span>
+          <span class="value">1yr / $8M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Chubb — 2025 Sacks</span>
+          <span class="value">8.5</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Chubb — Career Sacks</span>
+          <span class="value">48</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Mougey Overlap</span>
+          <span class="value green">4+ Years (DEN)</span>
+        </div>
+        <div class="move-stat" style="background:var(--green);border-color:var(--green);">
+          <span class="label" style="color:rgba(240,239,233,0.6);">AVT — Deal</span>
+          <span class="value">2yr / $18M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Combined Yr 1 Cap</span>
+          <span class="value green">~$12M</span>
+        </div>
+        <div class="move-stat">
+          <span class="label">Scheme Fit</span>
+          <span class="value highlight">High</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+</div><!-- /moves -->
+
+<!-- ===== LEDGER ===== -->
+<section class="ledger" id="ledger">
+  <div class="container">
+    <div class="section-label fade-in">// 003</div>
+    <h2 class="section-title fade-in">THE MATH</h2>
+
+    <table class="ledger-table fade-in">
+      <thead>
+        <tr>
+          <th style="width:40px;">Move</th>
+          <th>Player</th>
+          <th>Position</th>
+          <th>Year 1 Cap Hit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>01</td>
+          <td>Malik Willis</td>
+          <td>QB</td>
+          <td>~$22M</td>
+        </tr>
+        <tr>
+          <td>02</td>
+          <td>Odafe Oweh</td>
+          <td>EDGE</td>
+          <td>~$14M</td>
+        </tr>
+        <tr>
+          <td>03</td>
+          <td>Quay Walker</td>
+          <td>ILB</td>
+          <td>~$10M</td>
+        </tr>
+        <tr>
+          <td>04</td>
+          <td>Bryan Cook</td>
+          <td>S</td>
+          <td>~$8M</td>
+        </tr>
+        <tr>
+          <td>05</td>
+          <td>Chubb + AVT</td>
+          <td>EDGE / OG</td>
+          <td>~$12M</td>
+        </tr>
+        <tr>
+          <td>—</td>
+          <td>Breece Hall</td>
+          <td>RB (Tag)</td>
+          <td>~$12M</td>
+        </tr>
+        <tr>
+          <td>—</td>
+          <td>Rookie Pool</td>
+          <td>Draft Picks</td>
+          <td>~$10M</td>
+        </tr>
+        <tr class="dead-row">
+          <td></td>
+          <td colspan="2" style="font-style:italic;">Already committed: Garrett Wilson extension</td>
+          <td>~$10M</td>
+        </tr>
+        <tr class="dead-row">
+          <td></td>
+          <td colspan="2" style="font-style:italic;">Already committed: Justin Fields (dead/active)</td>
+          <td>~$22M</td>
+        </tr>
+        <tr class="dead-row">
+          <td></td>
+          <td colspan="2" style="font-style:italic;">Dead: Rodgers + Sauce + Q. Williams</td>
+          <td>~$55.8M</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">TOTAL 2026 CAP USAGE (incl. dead money + existing deals)</td>
+          <td>~$176M</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="ledger-remaining fade-in">
+      <span class="label">Estimated Remaining Cap (of ~$303M cap) after all moves + existing commitments</span>
+      <span class="value">~$5-8M</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ROSTER ===== -->
+<section class="roster" id="roster">
+  <div class="container">
+    <div class="section-label fade-in">// 004</div>
+    <h2 class="section-title fade-in">THE NEW JETS</h2>
+
+    <div class="roster-grid fade-in">
+      <!-- OFFENSE -->
+      <div class="roster-side">
+        <h3>OFFENSE</h3>
+        <div class="roster-row">
+          <span class="pos">QB</span>
+          <span class="name">Malik Willis</span>
+          <span class="source fa">FA</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">RB</span>
+          <span class="name">Breece Hall</span>
+          <span class="source tag">TAG</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">WR1</span>
+          <span class="name">Garrett Wilson</span>
+          <span class="source">Extension</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">WR2</span>
+          <span class="name">Adonai Mitchell</span>
+          <span class="source trade">Trade</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">TE</span>
+          <span class="name">Mason Taylor</span>
+          <span class="source draft">Draft '25</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">LT</span>
+          <span class="name">Olu Fashanu</span>
+          <span class="source draft">Draft '24</span>
+        </div>
+        <div class="roster-row need">
+          <span class="pos">LG</span>
+          <span class="name">Simpson UFA / Draft</span>
+          <span class="source draft">NEED</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">C</span>
+          <span class="name">Joe Tippmann</span>
+          <span class="source draft">Draft '23</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">RG</span>
+          <span class="name">Alijah Vera-Tucker</span>
+          <span class="source fa">FA</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">RT</span>
+          <span class="name">Armand Membou</span>
+          <span class="source draft">Draft '25</span>
+        </div>
+      </div>
+
+      <!-- DEFENSE -->
+      <div class="roster-side">
+        <h3>DEFENSE — GLENN'S HYBRID</h3>
+        <div class="roster-row">
+          <span class="pos">EDGE</span>
+          <span class="name">Arvell Reese</span>
+          <span class="source draft">Draft #2</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">EDGE</span>
+          <span class="name">Will McDonald IV</span>
+          <span class="source">Under K — 5th Yr</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">NT</span>
+          <span class="name">T'Vondre Sweat</span>
+          <span class="source trade">Trade</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">DT</span>
+          <span class="name">Mazi Smith</span>
+          <span class="source trade">Trade</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">EDGE</span>
+          <span class="name">Odafe Oweh</span>
+          <span class="source fa">FA</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">ILB</span>
+          <span class="name">Jamien Sherwood</span>
+          <span class="source">3yr / $45M</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">ILB</span>
+          <span class="name">Quay Walker</span>
+          <span class="source fa">FA</span>
+        </div>
+        <div class="roster-row need">
+          <span class="pos">CB1</span>
+          <span class="name">NEED — Sauce gone, Reed gone</span>
+          <span class="source draft">NEED</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">CB2</span>
+          <span class="name">Ja'Sir Taylor / Jarvis Brownlee</span>
+          <span class="source trade">Trade</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">S</span>
+          <span class="name">Bryan Cook</span>
+          <span class="source fa">FA</span>
+        </div>
+        <div class="roster-row need">
+          <span class="pos">S</span>
+          <span class="name">Draft / Roster (Cisco UFA)</span>
+          <span class="source">TBD</span>
+        </div>
+        <div class="roster-row">
+          <span class="pos">ROT</span>
+          <span class="name">Bradley Chubb</span>
+          <span class="source fa">FA</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="roster-note fade-in">
+      <h3>THE HONEST ASSESSMENT</h3>
+      <p>
+        Look at those <span style="color:var(--gold)">NEED</span> tags. <strong>CB1 is the most critical hole on this roster</strong> — Sauce Gardner, D.J. Reed, AND Michael Carter II all left. The only corners under contract are Ja'Sir Taylor and Jarvis Brownlee (who spent 2025 on IR). That's borderline emergency-level. <strong>Left guard</strong> is the other crisis — John Simpson is a UFA who was an elite run blocker in 2024 (79.2 PFF run-block grade, 8th in the NFL) but fell off hard in 2025 (56.7). The Jets seemed willing to let him walk at the Combine. Andre Cisco (S) is also a UFA after a pec injury ended his year in Week 8. These are <strong>draft problems</strong> — and the Jets have the capital to solve them. Two first-rounders and a second in 2026, three firsts in 2027. Part 2 addresses all of it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CAP PROJECTION ===== -->
+<section class="cap-projection" id="cap">
+  <div class="container">
+    <div class="section-label fade-in">// 005</div>
+    <h2 class="section-title fade-in">CAP OUTLOOK:<br>WHO'S ON THE BOOKS</h2>
+
+    <div class="cap-table-outer fade-in">
+      <table class="cap-proj-table">
+        <thead>
+          <tr>
+            <th>Player</th>
+            <th>2026 Cap Hit</th>
+            <th>2027 Cap Hit</th>
+            <th>Years Left</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Garrett Wilson</td>
+            <td>~$10M</td>
+            <td>~$30M+</td>
+            <td>4 yrs</td>
+            <td style="color:var(--green-bright)">Cornerstone. Team-friendly Yr 1.</td>
+          </tr>
+          <tr>
+            <td>Justin Fields</td>
+            <td>~$22-23M</td>
+            <td>—</td>
+            <td>Sunk cost</td>
+            <td style="color:var(--red)">$22M dead if cut. Likely released.</td>
+          </tr>
+          <tr>
+            <td>Olu Fashanu</td>
+            <td>~$4M</td>
+            <td>~$5M</td>
+            <td>3 yrs</td>
+            <td style="color:var(--green-bright)">Rookie deal. Elite LT.</td>
+          </tr>
+          <tr>
+            <td>Armand Membou</td>
+            <td>~$5M</td>
+            <td>~$6M</td>
+            <td>4 yrs</td>
+            <td style="color:var(--green-bright)">Rookie deal. All-Rookie RT.</td>
+          </tr>
+          <tr>
+            <td>Mason Taylor</td>
+            <td>~$2M</td>
+            <td>~$2.5M</td>
+            <td>3 yrs</td>
+            <td style="color:var(--green-bright)">Rookie deal. Starting TE.</td>
+          </tr>
+          <tr>
+            <td>Adonai Mitchell</td>
+            <td>~$2M</td>
+            <td>~$2.5M</td>
+            <td>3 yrs</td>
+            <td>Acquired via Sauce trade.</td>
+          </tr>
+          <tr>
+            <td>T'Vondre Sweat</td>
+            <td>~$1.5M</td>
+            <td>~$2M</td>
+            <td>2 yrs</td>
+            <td>Acquired via Johnson trade.</td>
+          </tr>
+          <tr>
+            <td>Will McDonald IV</td>
+            <td>~$5M</td>
+            <td>~$15.3M (5th yr)</td>
+            <td>2 yrs</td>
+            <td style="color:var(--green-bright)">21.5 career sacks. 5th-yr option pickup.</td>
+          </tr>
+          <tr>
+            <td>Jamien Sherwood</td>
+            <td>~$15M</td>
+            <td>~$15M</td>
+            <td>3 yrs</td>
+            <td style="color:var(--gold)">$45M ext. 154 tackles. $25M dead if cut.</td>
+          </tr>
+          <tr>
+            <td>Joe Tippmann</td>
+            <td>~$4M</td>
+            <td>Extension?</td>
+            <td>1 yr + ext</td>
+            <td style="color:var(--green-bright)">Starting C. Extension candidate.</td>
+          </tr>
+          <tr>
+            <td>Mazi Smith</td>
+            <td>~$3M</td>
+            <td>—</td>
+            <td>1 yr</td>
+            <td>Acquired via Q. Williams trade.</td>
+          </tr>
+          <tr>
+            <td style="color:var(--red)">Rodgers (dead)</td>
+            <td style="color:var(--red)">~$35M</td>
+            <td>—</td>
+            <td>Final yr</td>
+            <td style="color:var(--gray-dark)">Gone after 2026. Finally.</td>
+          </tr>
+          <tr>
+            <td style="color:var(--red)">Sauce (dead)</td>
+            <td style="color:var(--red)">~$11M</td>
+            <td style="color:var(--red)">TBD</td>
+            <td>—</td>
+            <td style="color:var(--gray-dark)">Traded to IND.</td>
+          </tr>
+          <tr>
+            <td style="color:var(--red)">Q. Williams (dead)</td>
+            <td style="color:var(--red)">~$9.8M</td>
+            <td>—</td>
+            <td>—</td>
+            <td style="color:var(--gray-dark)">Traded to DAL.</td>
+          </tr>
+          <tr class="total-row">
+            <td>TOTAL EXISTING COMMITMENTS</td>
+            <td>~$96M</td>
+            <td></td>
+            <td></td>
+            <td class="green">+ ~$91M available</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="cap-note fade-in">
+      <strong style="color:var(--white)">The silver lining:</strong> The Jets' long-term cap is remarkably clean. Garrett Wilson is the only major multi-year commitment on the active roster. The entire young core (Fashanu, Membou, Taylor, Mitchell, Sweat) is on rookie deals. The Rodgers dead cap — the biggest albatross — clears entirely after 2026. By 2027, the Jets will have massive cap space again AND three first-round picks. This pain is temporary. The cap structure is built for sustained spending starting next year.
+    </p>
+  </div>
+</section>
+
+<!-- ===== PART 2 TEASER ===== -->
+<section class="teaser">
+  <div class="section-label fade-in">// Coming Next</div>
+  <h2 class="teaser-title fade-in">PART 2:<br>THE DRAFT BOARD</h2>
+  <p class="teaser-text fade-in">
+    Arvell Reese at #2 is locked. But what about #16? The second-round pick from Dallas? The three first-rounders in 2027? With CB1 a gaping void, left guard open, and secondary depth nonexistent — the draft has to deliver.
+  </p>
+  <div class="teaser-needs fade-in">
+    <div class="teaser-need">CB1 — Critical</div>
+    <div class="teaser-need">Left Guard</div>
+    <div class="teaser-need">Safety Depth</div>
+    <div class="teaser-need">CB Depth</div>
+    <div class="teaser-need">DL Rotation</div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-sources">
+      <h4>SOURCES</h4>
+      <a href="https://www.espn.com/nfl/story/_/id/46847491/sources-jets-trade-sauce-gardner-colts-2-first-rounders" target="_blank">ESPN — Jets trade Sauce Gardner to Colts for two first-round picks</a>
+      <a href="https://www.espn.com/nfl/story/_/id/46848422/sources-jets-trade-quinnen-williams-cowboys" target="_blank">ESPN — Jets trade Quinnen Williams to Cowboys</a>
+      <a href="https://www.espn.com/nfl/story/_/id/48043185/sources-jets-trade-jermaine-johnson-titans-tvondre-sweat" target="_blank">ESPN — Jets trade Jermaine Johnson for T'Vondre Sweat</a>
+      <a href="https://www.theringer.com/2025/11/04/nfl/winners-losers-2025-nfl-trade-deadline-new-york-jets-trade-sauce-gardner-quinnen-williams-jerry-jones" target="_blank">The Ringer — Winners and Losers: 2025 Trade Deadline</a>
+      <a href="https://heavy.com/sports/nfl/new-york-jets/malik-willis-aggressive-green-bay-packers/" target="_blank">Heavy — Jets expected to be 'big players' for Malik Willis</a>
+      <a href="https://sports.yahoo.com/articles/packers-71-million-free-agent-140630660.html" target="_blank">Yahoo Sports — Packers $71M free agent predicted to leave for Jets</a>
+      <a href="https://clutchpoints.com/nfl/new-york-jets/jets-news-jermaine-johnson-trade-screams-arvell-reese-david-bailey-pick-no-2" target="_blank">ClutchPoints — Johnson trade screams Arvell Reese at #2</a>
+      <a href="https://www.nfl.com/news/top-25-nfl-free-agents-in-2026-edge-rushers-receivers-define-upcoming-class" target="_blank">NFL.com — Top 25 free agents in 2026</a>
+      <a href="https://www.espn.com/nfl/story/_/id/47947400/dolphins-releasing-pass-rusher-bradley-chubb-source-says" target="_blank">ESPN — Dolphins releasing Bradley Chubb</a>
+      <a href="https://jetsxfactor.com/2026/02/16/jets-target-released-dolphins-star/" target="_blank">JetsXFactor — Jets should target released Dolphins star (Chubb)</a>
+      <a href="https://www.espn.com/nfl/story/_/id/46217230/new-york-jets-historic-rookie-class-debut-membou-mason-taylor" target="_blank">ESPN — Jets' historic rookie debut: Membou, Mason Taylor</a>
+      <a href="https://bleacherreport.com/articles/25372647-aaron-rodgers-justin-fields-headline-jets-top-salary-cap-hits-2026-nfl-season" target="_blank">Bleacher Report — Rodgers, Fields headline Jets' top 2026 cap hits</a>
+      <a href="https://www.denverbroncos.com/news/he-certainly-will-be-a-gm-down-the-road-how-assistant-gm-darren-mougey-became-an" target="_blank">Denver Broncos — How Darren Mougey became an invaluable member of the front office</a>
+      <a href="https://www.pff.com/news/nfl-free-agent-rankings-2026" target="_blank">PFF — 2026 NFL free agent rankings</a>
+    </div>
+    <div class="footer-colophon">
+      Fixing the Jets — Part 1 of 2 — February 2026 — Free Agency Edition<br>
+      The draft may change everything. This analysis assumes current market conditions and reported cap figures.
+    </div>
+  </div>
+</footer>
+
+<script>
+// Scroll progress bar
+const progress = document.getElementById('scrollProgress');
+const nav = document.getElementById('nav');
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const scrollPercent = (scrollTop / docHeight) * 100;
+  progress.style.width = scrollPercent + '%';
+
+  // Show nav after scrolling past hero
+  if (scrollTop > window.innerHeight * 0.6) {
+    nav.classList.add('visible');
+  } else {
+    nav.classList.remove('visible');
+  }
+});
+
+// Fade-in on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
