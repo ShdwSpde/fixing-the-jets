@@ -309,8 +309,14 @@ section {
 .split-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2px;
+  gap: 48px;
   margin-bottom: 60px;
+}
+
+.split-col {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(42,42,42,0.6);
+  padding: 28px 24px 12px;
 }
 
 .split-col h3 {
@@ -1061,6 +1067,7 @@ footer {
   .roster-grid { grid-template-columns: 1fr; gap: 48px; }
   .situation-grid { grid-template-columns: 1fr 1fr; }
   .split-grid { grid-template-columns: 1fr; gap: 40px; }
+  .split-col { padding: 20px 16px 8px; }
   .dead-money-grid { grid-template-columns: 1fr; }
   .fields-grid { grid-template-columns: 1fr 1fr; }
   .capital-grid { grid-template-columns: 1fr; gap: 32px; }
